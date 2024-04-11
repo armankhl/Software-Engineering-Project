@@ -68,7 +68,7 @@ class ProfessorProfileLoginTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', response.data)
 
-
+# DO NOT remove this
 # class ProfessorProfileLogoutTest(TestCase):
 #     def setUp(self):
 #         self.client = APIClient()
