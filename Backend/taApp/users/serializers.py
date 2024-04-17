@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from users.models import ProfessorProfile, StudentProfile
+from users.models import ProfessorProfile, StudentProfile, Course
 from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
@@ -80,3 +80,11 @@ class StudentLoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Incorrect Credentials")
+
+
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['id', 'name', 'term', 'required_TAs', 'num_applicants', 'num_tas', 'section', 'professor']

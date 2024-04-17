@@ -167,3 +167,45 @@ class StudentProfileLoginTest(TestCase):
         response = self.client.post('/users/student-login/', self.login_data, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', response.data)
+
+from django.urls import reverse
+from rest_framework.test import APITestCase
+from rest_framework import status
+from .models import Course
+class ProfessorCourseAPITest(APITestCase):
+    def test_get_courses_by_professor_name(self):
+        professor_name = 'mohammadMahdi'  # Replace with your desired professor name
+
+        # Create test data
+        professor_profile = ProfessorProfile.objects.create(user=User.objects.create(username=professor_name))
+        Course.objects.create(
+            name="data structure",
+            term=4022,
+            required_TAs=5,
+            num_applicants=10,
+            num_tas=3,
+            section=2,
+            professor=professor_profile
+        )
+
+        # Test API endpoint
+        url = reverse('professor-lesson', kwargs={'professor_name': professor_name})
+        response = self.client.get(url)
+
+        # Check response status code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check response data
+        expected_data = [
+            {
+                "id": 1,
+                "name": "data structure",
+                "term": 4022,
+                "required_TAs": 5,
+                "num_applicants": 10,
+                "num_tas": 3,
+                "section": 2,
+                "professor": professor_profile.id  # Assuming ProfessorProfile has an auto-incremented id
+            }
+        ]
+        self.assertEqual(response.data, expected_data)
