@@ -1,17 +1,19 @@
 import Courses from "@/components/courses";
-import Header from "@/components/header";
+import Layout from "@/components/layout";
 
-const profHome = () => {
-  return(
-      <div className={'h-screen w-screen bg-white'}>
-          <div>
-              <Header/>
-          </div>
-          <Courses/>
-           <div>
-              <Header/>
-          </div>
+const ProfHome = () => {
+  return (
+    <Layout>
+      <div
+        className={" w-screen h-screen bg-white overflow-x-hidden"}
+        dir={"rtl"}
+      >
+        <div className={"flex flex-col px-10 gap-5 my-10"}>
+          <p className={"text-lg text-gray-900 "}> درس های درحال انتخاب</p>
+          <Courses />
+        </div>
       </div>
-  )
-}
-export default profHome
+    </Layout>
+  );
+};
+export default ProfHome;
