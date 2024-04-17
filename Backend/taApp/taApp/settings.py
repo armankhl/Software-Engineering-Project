@@ -80,9 +80,9 @@ WSGI_APPLICATION = "taApp.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "ta_db",
+        "NAME": "postgres",
         "USER": 'postgres',
-        "PASSWORD": 'postgres',
+        "PASSWORD": '1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }
