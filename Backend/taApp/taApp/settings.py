@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'users',
     "rest_framework",
+    'rest_framework.authtoken',
     "taApp",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -79,9 +80,9 @@ WSGI_APPLICATION = "taApp.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "ta_db",
+        "NAME": "postgres",
         "USER": 'postgres',
-        "PASSWORD": 'postgres',
+        "PASSWORD": '1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -106,6 +107,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
