@@ -6,6 +6,7 @@ from users.serializers import ProfessorRegisterSerializer, StudentRegisterSerial
 from django.urls import reverse
 from rest_framework import status
 from .models import Course
+from rest_framework.test import APITestCase
 
 class ProfessorRegistrationTest(TestCase):
     def setUp(self):

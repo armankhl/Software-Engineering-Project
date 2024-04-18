@@ -8,6 +8,8 @@ from .serializers import ProfessorLoginSerializer, StudentLoginSerializer
 from .models import ProfessorProfile
 from .serializers import CourseSerializer
 from rest_framework import authentication, permissions
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 class ProfessorLoginView(APIView):
     def post(self, request):
         serializer = ProfessorLoginSerializer(data=request.data)
