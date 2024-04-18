@@ -7,6 +7,8 @@ from rest_framework.authtoken.models import Token
 from .serializers import ProfessorLoginSerializer, StudentLoginSerializer
 from .models import ProfessorProfile
 from .serializers import CourseSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 class ProfessorLoginView(APIView):
     def post(self, request):
         serializer = ProfessorLoginSerializer(data=request.data)
@@ -52,6 +54,8 @@ class StudentLogoutView(APIView):
         return Response(status=status.HTTP_200_OK)
 
 class ProfessorCourseAPIView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, professor_name):
 
         if professor_name is None:
