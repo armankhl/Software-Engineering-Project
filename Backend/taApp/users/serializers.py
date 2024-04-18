@@ -34,7 +34,7 @@ class ProfessorRegisterSerializer(serializers.ModelSerializer):
         prof = ProfessorProfile.objects.create(user=user, national_no=national_no)
         return prof
 
-class ProfessorLoginSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
@@ -71,15 +71,6 @@ class StudentRegisterSerializer(serializers.ModelSerializer):
         stu = StudentProfile.objects.create(user=user, stu_no=stu_no, is_ta=is_ta, phone_no=phone_no)
         return stu
 
-class StudentLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
-
-    def validate(self, data):
-        user = authenticate(request=self.context.get('request'), **data)
-        if user and user.is_active:
-            return user
-        raise serializers.ValidationError("Incorrect Credentials")
 
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:

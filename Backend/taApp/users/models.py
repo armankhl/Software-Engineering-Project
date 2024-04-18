@@ -5,7 +5,7 @@ class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     stu_no = models.CharField(verbose_name="Student Number", max_length=10, blank=False, null=False)
     is_ta = models.BooleanField(default=False)
-    phone_no = models.IntegerField(verbose_name="Phone Number", blank=False, null=False)
+    phone_no = models.CharField(verbose_name="Phone Number", blank=False, null=False)
 
 class ProfessorProfile(models.Model):
 
