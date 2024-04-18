@@ -3,7 +3,9 @@ from rest_framework.test import APIClient, APIRequestFactory
 from django.contrib.auth.models import User
 from users.models import ProfessorProfile, StudentProfile
 from users.serializers import ProfessorRegisterSerializer, StudentRegisterSerializer
-
+from django.urls import reverse
+from rest_framework import status
+from .models import Course
 
 class ProfessorRegistrationTest(TestCase):
     def setUp(self):
@@ -168,10 +170,7 @@ class StudentProfileLoginTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', response.data)
 
-from django.urls import reverse
-from rest_framework.test import APITestCase
-from rest_framework import status
-from .models import Course
+
 class ProfessorCourseAPITest(APITestCase):
     def test_get_courses_by_professor_name(self):
         professor_name = 'mohammadMahdi'  # Replace with your desired professor name

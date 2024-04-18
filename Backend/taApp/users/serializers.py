@@ -81,9 +81,6 @@ class StudentLoginSerializer(serializers.Serializer):
             return user
         raise serializers.ValidationError("Incorrect Credentials")
 
-
-
-
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
