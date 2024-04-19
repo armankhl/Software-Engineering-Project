@@ -1,7 +1,10 @@
+import { DRF_TOKEN_KEY } from "@/utils/api/axios";
 import { Menu, MenuItem } from "@mui/material";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 const Header = () => {
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -32,13 +35,13 @@ const Header = () => {
       <div
         className={"text-white basis-8/12 flex flex-row gap-16 items-center"}
       >
-        <a href="/ProfHome" className={""}>
+        <a href="/professor-home" className={""}>
           خانه
         </a>
-        <a href="/ProfReq" className={""}>
+        <a href="/professor-new-request" className={""}>
           تعریف درس جدید
         </a>
-        <a href="/ProfChoose" className={""}>
+        <a href="/professor-select-student" className={""}>
           درخواست ها
         </a>
       </div>
@@ -67,11 +70,21 @@ const Header = () => {
         }}
         className="mt-3"
       >
-        <a href="/ProfProfile">
+        <a href="/professor-profile">
           <MenuItem onClick={handleClose}>پروفایل</MenuItem>
         </a>
-        <MenuItem onClick={handleClose}>ویرایش</MenuItem>
-        <MenuItem onClick={handleClose}>خروج</MenuItem>
+        <a href="/professor-profile-edit">
+          <MenuItem onClick={handleClose}>ویرایش</MenuItem>
+        </a>
+        <MenuItem
+          onClick={() => {
+            localStorage.removeItem(DRF_TOKEN_KEY);
+            handleClose();
+            router.push("/login");
+          }}
+        >
+          خروج
+        </MenuItem>
       </Menu>
     </div>
   );

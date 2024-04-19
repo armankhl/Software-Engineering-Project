@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { loginAPI } from "@/utils/api/login";
-import { toast } from "react-toastify";
 import { DRF_TOKEN_KEY } from "@/utils/api/axios";
+import { loginAPI } from "@/utils/api/login";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const router = useRouter();
@@ -19,9 +19,9 @@ const Login = () => {
       toast.error("مشکلی بوجود آمده است");
     },
     onSuccess(data) {
-      const token = data.DRF_TOKEN_KEY; // TODO: token ro az data backend begir
+      const token = data.token; // TODO: token ro az data backend begir
       localStorage.setItem(DRF_TOKEN_KEY, token);
-      router.push("/ProfHome");
+      router.push("/professor-home");
     },
   });
 
@@ -33,7 +33,10 @@ const Login = () => {
   const formSubmitHandler = async (e) => {
     e.preventDefault();
 
-    loginMutation.mutate(formValue);
+    loginMutation.mutate({
+      username: formValue.userName,
+      password: formValue.password,
+    });
   };
 
   return (
@@ -49,8 +52,9 @@ const Login = () => {
         }
       >
         <div className={"flex flex-col text-center gap-5 mb-5"}>
-          <p className={"text-white text-5xl"}>SAMA OSTAD</p>
+          <p className={"text-white text-5xl"}>SAMA</p>
           <p className={"text-base text-gray-300"}>سامانه مدیریت استادیار</p>
+          <p className={"text-sm text-gray-300"}>  ورود استاد</p>
         </div>
 
         <form
@@ -65,7 +69,7 @@ const Login = () => {
           }
         >
           <div className={"flex flex-col w-80 mb-12"}>
-            <p className={"text-base pb-2 text-start pr-5 text-white"}>
+            <p className={"text-xl pb-2 text-start pr-5 text-white"}>
               نام کاربری
             </p>
             <input
@@ -94,7 +98,7 @@ const Login = () => {
           </div>
 
           <button
-            className="font-bold drop-shadow-md text-[#222831] text-center mt-20 rounded-xl bg-[#76ABAE] px-16 py-2 pb-3
+            className="font-bold drop-shadow-md text-[#222831] text-center mt-10 rounded-xl bg-[#76ABAE] px-16 py-2 pb-3
                     shadow-sm shadow-[#EEEEEE] hover:scale-105 transition ease-in-out delay-50"
             type={"submit"}
           >
@@ -102,12 +106,12 @@ const Login = () => {
           </button>
           <div className={"flex flex-row text-sm gap-1 mt-5 text-gray-300"}>
             <p>حساب کاربری ندارید؟</p>
-            <button className={"text-white hover:text-[#76ABAE]"}>
+            <a href="/sign-up/ostad" className={"text-white hover:text-[#76ABAE]"}>
               ثبت نام
-            </button>
+            </a>
           </div>
 
-          <Link className="mt-5" href="/login">
+          <Link className="mt-5 hover:text-[#76ABAE]" href="/login">
             ورود دانشجو
           </Link>
 

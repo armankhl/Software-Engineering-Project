@@ -21,7 +21,7 @@ const Login = () => {
     onSuccess(data) {
       const token = data.DRF_TOKEN_KEY; // TODO: token ro az data backend begir
       localStorage.setItem(DRF_TOKEN_KEY, token);
-      router.push("/ProfHome");
+      router.push("/professor-home");
     },
   });
 
@@ -33,7 +33,10 @@ const Login = () => {
   const formSubmitHandler = async (e) => {
     e.preventDefault();
 
-    loginMutation.mutate(formValue);
+    loginMutation.mutate({
+      username: formValue.userName,
+      password: formValue.password,
+    });
   };
 
   return (
@@ -51,6 +54,7 @@ const Login = () => {
         <div className={"flex flex-col text-center gap-5 mb-5"}>
           <p className={"text-white text-5xl"}>SAMA</p>
           <p className={"text-base text-gray-300"}>سامانه مدیریت استادیار</p>
+          <p className={"text-sm text-gray-300"}> ورود دانشجو</p>
         </div>
 
         <form
@@ -103,11 +107,11 @@ const Login = () => {
           </button>
           <div className={"flex flex-row text-sm gap-1 mt-5 text-gray-300"}>
             <p>حساب کاربری ندارید؟</p>
-            <button className={"text-white hover:text-[#76ABAE]"}>
+            <a href="/sign-up" className={"text-white hover:text-[#76ABAE]"}>
               ثبت نام
-            </button>
+            </a>
           </div>
-          <Link className="mt-5" href="/login/ostad">
+          <Link className="mt-5 hover:text-[#76ABAE]" href="/login/ostad">
             ورود استاد
           </Link>
 
@@ -119,8 +123,12 @@ const Login = () => {
         </form>
 
         <div className={"flex flex-row gap-28 text-white text-lg mt-5"}>
-          <button>ارتباط با پشتیبانی</button>
-          <button>شرایط و قوانین</button>
+          <a href="/about/contact">
+            <button>ارتباط با پشتیبانی</button>
+          </a>
+          <a href="/about/rules">
+            <button>شرایط و قوانین</button>
+          </a>
         </div>
       </div>
     </div>
