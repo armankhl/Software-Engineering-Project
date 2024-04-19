@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = process.env.API_BASE_URL ?? "";
+const baseUrl = "http://127.0.0.1:8000";
 
 export const apiService = axios.create({
   baseURL: baseUrl,
