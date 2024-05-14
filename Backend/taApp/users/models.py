@@ -8,7 +8,6 @@ class StudentProfile(models.Model):
     phone_no = models.CharField(verbose_name="Phone Number", blank=False, null=False)
 
 class ProfessorProfile(models.Model):
-
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     national_no = models.CharField(verbose_name="National Number", max_length=10, unique=True, blank=False)
     students = models.ManyToManyField('StudentProfile', through='StudentProfessor', related_name='professors', default=None)
@@ -20,7 +19,7 @@ class StudentProfessor(models.Model):
     professor = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, default=None)
 
 class Course(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Course Name")
+    name = models.CharField(max_length=100, verbose_name="Course Name",unique=True)
     term = models.IntegerField(verbose_name="Term")
     required_TAs = models.IntegerField(verbose_name="Required TAs")
     num_applicants = models.IntegerField(verbose_name="Number of Applicants", default=0)
