@@ -1,1 +1,1 @@
-H1<SAMA Project Introduction>
+SAMA Project Introduction
