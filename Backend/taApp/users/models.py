@@ -1,29 +1,31 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import Group
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import User
 
-class StudentProfessor(models.Model) :
-    students = models.ForeignKey('Student', on_delete=models.CASCADE)
-    professors = models.ForeignKey('Professor', on_delete=models.CASCADE)
-
-class Professor(AbstractUser) :
-    first_name = models.CharField(verbose_name="First Name", max_length=25, blank=False, default='')
-    last_name = models.CharField(verbose_name="Last Name", max_length=50, blank=False, default='')
-    email = models.EmailField(unique=True, blank=False, null=False)
-    national_no = models.CharField(verbose_name="National Number", max_length=10, unique=True, blank=False)
-    sts = models.ManyToManyField('Student', verbose_name="students", through='StudentProfessor', related_name='professors')
-    user_permissions = models.ManyToManyField(Permission, related_name='professors_permissions')
-    groups = models.ManyToManyField(Group, related_name='professors_groups')
-    
-
-class Student(AbstractUser):
-    first_name = models.CharField(verbose_name="First Name", max_length=25, blank=False, default='')
-    last_name = models.CharField(verbose_name="Last Name", max_length=50, blank=False, default='')
+class StudentProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     stu_no = models.CharField(verbose_name="Student Number", max_length=10, blank=False, null=False)
-    email = models.EmailField(unique=True, blank=False, null=True)
-    pros = models.ManyToManyField('Professor', verbose_name="professors", through='StudentProfessor', related_name='students')
-    user_permissions = models.ManyToManyField(Permission, related_name='students_permissions')
-    groups = models.ManyToManyField(Group, related_name='students_groups')
     is_ta = models.BooleanField(default=False)
     phone_no = models.IntegerField(verbose_name="Phone Number", blank=False, null=False)
+
+class ProfessorProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    national_no = models.CharField(verbose_name="National Number", max_length=10, unique=True, blank=False)
+    students = models.ManyToManyField('StudentProfile', through='StudentProfessor', related_name='professors', default=None)
+    def __str__(self):
+        return f"{self.user} - {self.national_no}"
+#intermediary model for adding some elemnts like datetime for relations if necessary
+class StudentProfessor(models.Model):
+    student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, default=None)
+    professor = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, default=None)
+
+class Course(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Course Name")
+    term = models.IntegerField(verbose_name="Term")
+    required_TAs = models.IntegerField(verbose_name="Required TAs")
+    num_applicants = models.IntegerField(verbose_name="Number of Applicants", default=0)
+    num_tas = models.IntegerField(verbose_name="Number of TAs", default=0)
+    section = models.IntegerField(verbose_name="Section")
+    professor = models.ForeignKey('ProfessorProfile', on_delete=models.CASCADE, related_name='courses')
+
+    def __str__(self):
+        return f"{self.name} - Term {self.term} - Section {self.section}"
