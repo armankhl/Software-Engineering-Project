@@ -10,6 +10,25 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.mixins import UserPassesTestMixin
+import operator
+from functools import reduce
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+
+class MultipleFieldLookupMixin(object):
+    def get_object(self):
+        queryset = self.get_queryset() 
+        queryset = self.filter_queryset(queryset)  
+        filters = {}
+        pk_fields = ["pk", "id"]
+        for field in self.lookup_fields:
+            identifier = self.kwargs[self.lookup_field]
+            if (field in pk_fields and identifier.isdigit()) or field not in pk_fields:
+                filters[field] = self.kwargs[self.lookup_field]
+        q = reduce(operator.or_, (Q(x) for x in filters.items()))
+        obj = get_object_or_404(queryset, q)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 
 class ProfessorRegisterView(APIView):
@@ -77,13 +96,9 @@ class StudentRegisterView(APIView):
 class ProfessorCourseAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request, professor_name):
-
-        if professor_name is None:
-            return Response("Professor name is required in query parameters", status=status.HTTP_400_BAD_REQUEST)
-
+    def get(self, request):
         try:
-            professor = ProfessorProfile.objects.get(user__username=professor_name)
+            professor = ProfessorProfile.objects.get(user=request.user)
         except ProfessorProfile.DoesNotExist:
             return Response("Professor not found(course api)", status=status.HTTP_404_NOT_FOUND)
 
@@ -91,37 +106,6 @@ class ProfessorCourseAPIView(APIView):
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
 
-# class CourseRegisterView(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-#     def post(self, request):
-#         professor_username = request.data.get('professor_username')
-#         if professor_username is None:
-#             return Response("Professor username is required in query parameters", status=status.HTTP_400_BAD_REQUEST)
-#         try:
-#             professor = ProfessorProfile.objects.get(user__username=professor_username)
-#         except ProfessorProfile.DoesNotExist:
-#             return Response(f"Professor {professor_username} not found", status=status.HTTP_404_NOT_FOUND)
-#         # serializer = CourseSerializer(data=request.data, context={'professor_username': professor_username})
-#         # if serializer.is_valid():
-#         #     serializer.save()
-#         #     return Response(serializer.data)
-#         # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#         serializer = CourseSerializer(data=request.data)
-#         if serializer.is_valid():
-#             # Pass professor_username directly to the serializer's save method
-#             serializer.save(professor=professor)
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-#         # serializer = CourseSerializer(data=request.data)
-#         # if serializer.is_valid():
-#         #     # Pass professor_username to the serializer's create method
-#         #     course = serializer.create(serializer.validated_data, professor_username)
-#         #     serializer.save(professor_username=professor_username)
-#         #     return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CourseRegisterView(APIView):
     def post(self, request):
@@ -139,11 +123,10 @@ class ProfessorDetailsView(UserPassesTestMixin, APIView):
     permission_classes = [IsAuthenticated]
 
     def test_func(self):
-        # Check if the current user is the professor whose details are being accessed
-        user_id = self.kwargs['professor_id']  # Assuming 'professor_id' is the user ID
+        user_id = self.kwargs['professor_id'] 
         try:
             professor = ProfessorProfile.objects.get(user__id=user_id)
-            return True  # Assuming the user is the professor
+            return True 
         except ProfessorProfile.DoesNotExist:
             return False
 
@@ -153,14 +136,14 @@ class ProfessorDetailsView(UserPassesTestMixin, APIView):
         except ProfessorProfile.DoesNotExist:
             return Response({"error": "Professor not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        # Retrieve associated students
+        
         students = StudentProfile.objects.filter(studentprofessor__professor=professor)
         
-        # Serialize professor and students
+        
         professor_serializer = ProfessorProfileSerializer(professor)
         students_serializer = StudentProfileSerializer(students, many=True)
         
-        # Combine professor and students data
+       
         data = {
             "professor": professor_serializer.data,
             "students": students_serializer.data
@@ -168,45 +151,40 @@ class ProfessorDetailsView(UserPassesTestMixin, APIView):
         
         return Response(data, status=status.HTTP_200_OK)
 
-
-# class UserProfileUpdateAPIView(generics.UpdateAPIView):
-#     permission_classes = (permissions.IsAuthenticated,)
-
-#     def get_object(self):
-#         return self.request.user
-
-#     def update(self, request, *args, **kwargs):
-#         serializer = UserProfileSerializer(data=request.data, partial=True)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_200_OK)
 class UserPartialUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'id'  # Or any other unique field
+    lookup_field = 'id'  
 
 class StudentProfilePartialUpdateView(generics.UpdateAPIView):
     queryset = StudentProfile.objects.all()
     serializer_class = StudentProfileSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'id'  # Use 'id' for lookups
+    lookup_field = 'id'  
 
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.phone_no = request.data.get('phone_no', instance.phone_no)
-        instance.is_ta = request.data.get('is_ta', instance.is_ta)  # Assuming 'is_ta' is a boolean field
-        instance.save(update_fields=['phone_no', 'is_ta'])  # Specify fields to update
+        instance.is_ta = request.data.get('is_ta', instance.is_ta)  
+        instance.save(update_fields=['phone_no', 'is_ta'])  
         return super().partial_update(request, *args, **kwargs)
 
 class ProfessorProfilePartialUpdateView(generics.UpdateAPIView):
     queryset = ProfessorProfile.objects.all()
     serializer_class = ProfessorProfileSerializer
     permission_classes = [IsAuthenticated]
-    lookup_field = 'id'  # Use 'id' for lookups
+    lookup_field = 'id' 
 
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.national_no = request.data.get('national_no', instance.national_no)
         instance.save(update_fields=['national_no'])
         return super().partial_update(request, *args, **kwargs)
+
+class CourseDeleteView(MultipleFieldLookupMixin, generics.DestroyAPIView):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'name' 
+    lookup_fields = ('name', 'id')  
