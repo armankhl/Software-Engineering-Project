@@ -96,13 +96,17 @@ class StudentRegisterView(APIView):
 class ProfessorCourseAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request):
+       def get(self, request, name):
+
         try:
-            professor = ProfessorProfile.objects.get(user=request.user)
+            users = User.objects.get(username=name)
+            professor = ProfessorProfile.objects.get(user=users)
+
         except ProfessorProfile.DoesNotExist:
             return Response("Professor not found(course api)", status=status.HTTP_404_NOT_FOUND)
 
-        courses = professor.courses.all()  
+        courses = professor.courses.all()
+
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
 
