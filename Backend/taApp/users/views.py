@@ -72,6 +72,7 @@ class LoginView(APIView):
                 return Response({"token": token.key, "user_data": user_data}, status=status.HTTP_200_OK)
             else:
                 user_data = {
+                'id_professor':professor.id,
                 'id': user.id,
                 'role': "professor",
                 'username': user.username,
