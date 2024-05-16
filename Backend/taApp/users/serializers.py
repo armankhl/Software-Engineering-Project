@@ -78,7 +78,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['name', 'term', 'required_TAs', 'num_applicants', 'num_tas', 'section', 'professor']
+        fields = '__all__'
 
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
