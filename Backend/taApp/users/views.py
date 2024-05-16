@@ -96,7 +96,7 @@ class StudentRegisterView(APIView):
 class ProfessorCourseAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-       def get(self, request, name):
+    def get(self, request, name):
 
         try:
             users = User.objects.get(username=name)
@@ -109,6 +109,12 @@ class ProfessorCourseAPIView(APIView):
 
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
+
+    def post(self,request):
+        serialize = CourseSerializer(data=request.data)
+        if serialize.is_valid():
+            serialize.save()
+            return Response(serialize.data,status=status.HTTP_201_CREATED)
 
 
 class CourseRegisterView(APIView):
