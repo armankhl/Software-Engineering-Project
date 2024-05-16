@@ -72,7 +72,7 @@ class LoginView(APIView):
                 return Response({"token": token.key, "user_data": user_data}, status=status.HTTP_200_OK)
             else:
                 user_data = {
-                'id_professor':professor.id,
+                'professorid':professor.id,
                 'id': user.id,
                 'role': "professor",
                 'username': user.username,
@@ -111,7 +111,7 @@ class ProfessorCourseAPIView(APIView):
         serializer = CourseSerializer(courses, many=True)
         return Response(serializer.data)
 
-    def post(self,request):
+    def post(self,request,name):
         serialize = CourseSerializer(data=request.data)
         if serialize.is_valid():
             serialize.save()
