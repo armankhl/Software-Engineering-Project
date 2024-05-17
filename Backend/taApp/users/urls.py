@@ -15,4 +15,5 @@ urlpatterns = [
     path('update/<int:id>/', UserPartialUpdateView.as_view(), name='user_partial_update'),
     path('professor/delete-lesson/<str:name>/', CourseDeleteView.as_view(), name='course_delete_by_name'),
     path('request/<str:role>', RequestView.as_view(), name='requests'),
+    path('student/home/', allCourseInStudent, name='all_course'),
 ]
