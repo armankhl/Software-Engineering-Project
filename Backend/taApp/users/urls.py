@@ -3,9 +3,16 @@ from .views import *
 
 urlpatterns = [
     path('professor-register/', ProfessorRegisterView.as_view(), name='professor-register'),
-    path('professor-login/', ProfessorLoginView.as_view(), name='professor-login'),
-    path('professor-logout/', ProfessorLogoutView.as_view(), name='professor-logout'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('student-register/', StudentRegisterView.as_view(), name='student-register'),
-    path('student-login/', StudentLoginView.as_view(), name='student-login'),
-    path('student-logout/', StudentLogoutView.as_view(), name='student-logout'),
+    path('professor/<str:name>/lesson/', ProfessorCourseAPIView.as_view(), name= 'professor-lesson'),
+    path('professor/<str:name>/lesson/<int:id>', deleteCourse , name='professor-lesson'),
+    path('professor/create-lesson/', CourseRegisterView.as_view(), name= 'create-lesson'),
+    path('professor/get-detail/<int:professor_id>', ProfessorDetailsView.as_view(), name='professor-details'),
+    path('student/profile/<int:id>/', StudentProfilePartialUpdateView.as_view(), name='partial_update_student_profile'),
+    path('professor/profile/<int:id>/', ProfessorProfilePartialUpdateView.as_view(), name='partial_update_professor_profile'),
+    path('update/<int:id>/', UserPartialUpdateView.as_view(), name='user_partial_update'),
+    path('professor/delete-lesson/<str:name>/', CourseDeleteView.as_view(), name='course_delete_by_name'),
+    path('request/<str:role>', RequestView.as_view(), name='requests'),
 ]
