@@ -40,3 +40,18 @@ class Course(models.Model):
 
     def __str__(self):
         return f"{self.name} - Term {self.term} - Section {self.professor}"
+
+
+class Requests(models.Model):
+    course = models.ForeignKey('Course',on_delete=models.CASCADE, related_name='course_id')
+    student = models.ForeignKey('StudentProfile', on_delete=models.CASCADE, related_name='student_id')
+    enter_year = models.IntegerField(verbose_name='sal vorodi')
+    field_of_study = models.CharField(max_length=70)
+    point = models.IntegerField(verbose_name='point of ta')
+    gpa = models.FloatField(verbose_name='moadele daneshjo')
+    status = models.CharField(max_length=10, verbose_name='is ta or not')
+
+    def __str__(self):
+        return f"{self.course.name} and {self.student.user.username}"
+
+
