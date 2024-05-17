@@ -72,6 +72,16 @@ class StudentRegisterSerializer(serializers.ModelSerializer):
         stu = StudentProfile.objects.create(user=user, stu_no=stu_no, is_ta=is_ta, phone_no=phone_no)
         return stu
 
+class CourseForHomeStudentSerializer(serializers.ModelSerializer):
+    professor = serializers.PrimaryKeyRelatedField(queryset=ProfessorProfile.objects.all())
+    professorName = serializers.SerializerMethodField()
+    class Meta:
+        model = Course
+        fields = ('id', 'term', 'required_TAs', 'minPoint', 'passCourse', 'description', 'professor', 'professorName')
+
+    def get_professorName(self, obj):
+        return obj.professor.user.username
+
 
 class CourseSerializer(serializers.ModelSerializer):
     professor = serializers.PrimaryKeyRelatedField(queryset=ProfessorProfile.objects.all())
