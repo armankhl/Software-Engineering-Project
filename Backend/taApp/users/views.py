@@ -94,6 +94,26 @@ class StudentRegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class RequestView(APIView):
+    #authentication_classes = [TokenAuthentication]
+    #permissions_classes = [IsAuthenticated]
+
+    def get(self, request, role):
+        if role == 'student':
+            try:
+                ret_data = Requests.objects.get(student=request.data['id'])
+            except:
+                return Response(data="student not found",status=status.HTTP_404_NOT_FOUND)
+
+        if role == 'professor':
+            try:
+                ret_data = Requests.objects.get(course__professor__=request.data['id'])
+            except:
+                return Response(data="student not found", status=status.HTTP_404_NOT_FOUND)
+        serializer = RequestsSerializer(ret_data, many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+
 class ProfessorCourseAPIView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
