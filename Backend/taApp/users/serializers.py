@@ -93,4 +93,9 @@ class ProfessorProfileSerializer(serializers.ModelSerializer):
         fields = ['user','national_no','students']  # Adjust this to include only the fields you want to expose
 
 
+class RequestsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model  = Requests
+        fields = '__all__'
 
