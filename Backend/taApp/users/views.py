@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from .serializers import *
 from rest_framework.authtoken.models import Token
 from .models import ProfessorProfile, StudentProfile
@@ -159,7 +160,7 @@ class ProfessorCourseAPIView(APIView):
 def deleteCourse(request, name, id):
     cousre = Course.objects.get(id=id)
     cousre.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
