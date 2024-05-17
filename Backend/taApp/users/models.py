@@ -49,7 +49,8 @@ class Requests(models.Model):
     field_of_study = models.CharField(max_length=70)
     point = models.IntegerField(verbose_name='point of ta')
     gpa = models.FloatField(verbose_name='moadele daneshjo')
-    status = models.CharField(max_length=10, verbose_name='is ta or not')
+    status = models.CharField(max_length=10, choices=[('accept', 'Accept'), ('decline', 'Decline'), ('uncertain', 'Uncertain')])
+
 
     def __str__(self):
         return f"{self.course.name} and {self.student.user.username}"
