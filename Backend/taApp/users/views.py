@@ -144,6 +144,12 @@ class ProfessorCourseAPIView(APIView):
         if serialize.is_valid():
             serialize.save()
             return Response(serialize.data,status=status.HTTP_201_CREATED)
+    def delete(self,request,name):
+        data = request.data.get('id')
+        cousre = Course.objects.get(pk=id)
+        cousre.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 class CourseRegisterView(APIView):
