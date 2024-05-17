@@ -161,6 +161,13 @@ def deleteCourse(request, name, id):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['GET'])
+def allCourseInStudent(request):
+    courses = Course.objects.all()
+    serializer = CourseForHomeStudentSerializer(courses, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 
 class CourseRegisterView(APIView):
