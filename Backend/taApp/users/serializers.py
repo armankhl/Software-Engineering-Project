@@ -77,7 +77,7 @@ class CourseForHomeStudentSerializer(serializers.ModelSerializer):
     professorName = serializers.SerializerMethodField()
     class Meta:
         model = Course
-        fields = ('id', 'term', 'required_TAs', 'minPoint', 'passCourse', 'description', 'professor', 'professorName')
+        fields = ('id', 'term', 'required_TAs', 'minPoint', 'passCourse', 'description', 'professor', 'professorName', 'name')
 
     def get_professorName(self, obj):
         return obj.professor.user.username
