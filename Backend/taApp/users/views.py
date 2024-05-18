@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from .serializers import *
 from rest_framework.authtoken.models import Token
 from .models import ProfessorProfile, StudentProfile
@@ -15,7 +15,6 @@ import operator
 from functools import reduce
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
-
 class MultipleFieldLookupMixin(object):
     def get_object(self):
         queryset = self.get_queryset() 
@@ -157,6 +156,8 @@ class ProfessorCourseAPIView(APIView):
 
 
 @api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def deleteCourse(request, name, id):
     cousre = Course.objects.get(id=id)
     cousre.delete()
@@ -164,6 +165,8 @@ def deleteCourse(request, name, id):
 
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def allCourseInStudent(request):
     courses = Course.objects.all()
     serializer = CourseForHomeStudentSerializer(courses, many=True)

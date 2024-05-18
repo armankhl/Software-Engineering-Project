@@ -82,11 +82,11 @@ WSGI_APPLICATION = "taApp.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
+      "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "ta_db",
         "USER": 'postgres',
-        "PASSWORD": 'postgres',
+        "PASSWORD": '1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }

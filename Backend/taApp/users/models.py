@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from rest_framework.exceptions import ValidationError
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     stu_no = models.CharField(verbose_name="Student Number", max_length=10, blank=False, null=False)
