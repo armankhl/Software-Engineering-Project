@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from .serializers import *
 from rest_framework.authtoken.models import Token
 from .models import ProfessorProfile, StudentProfile
@@ -98,18 +99,19 @@ class RequestView(APIView):
     authentication_classes = [TokenAuthentication]
     permissions_classes = [IsAuthenticated]
 
-    def get(self, request, role):
+    def get(self, request, role, id):
         if role == 'student':
             try:
-                ret_data = Requests.objects.get(student=request.data['id'])
+                ret_data = Requests.objects.filter(student=id)
             except:
                 return Response(data="student not found",status=status.HTTP_404_NOT_FOUND)
 
         if role == 'professor':
             try:
-                ret_data = Requests.objects.get(course__professor__=request.data['id'])
+                ret_data = Requests.objects.filter(course__professor__=id)
             except:
                 return Response(data="student not found", status=status.HTTP_404_NOT_FOUND)
+
         serializer = RequestsSerializer(ret_data, many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
@@ -158,7 +160,14 @@ class ProfessorCourseAPIView(APIView):
 def deleteCourse(request, name, id):
     cousre = Course.objects.get(id=id)
     cousre.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def allCourseInStudent(request):
+    courses = Course.objects.all()
+    serializer = CourseForHomeStudentSerializer(courses, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
