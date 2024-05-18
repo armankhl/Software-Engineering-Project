@@ -1,13 +1,14 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from users.models import ProfessorProfile, StudentProfile
+from users.models import ProfessorProfile, StudentProfile, Course, Requests
 from django.contrib.auth import authenticate
+from rest_framework import generics
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+    
 
 class ProfessorRegisterSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -34,7 +35,7 @@ class ProfessorRegisterSerializer(serializers.ModelSerializer):
         prof = ProfessorProfile.objects.create(user=user, national_no=national_no)
         return prof
 
-class ProfessorLoginSerializer(serializers.Serializer):
+class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
@@ -71,12 +72,30 @@ class StudentRegisterSerializer(serializers.ModelSerializer):
         stu = StudentProfile.objects.create(user=user, stu_no=stu_no, is_ta=is_ta, phone_no=phone_no)
         return stu
 
-class StudentLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
 
-    def validate(self, data):
-        user = authenticate(request=self.context.get('request'), **data)
-        if user and user.is_active:
-            return user
-        raise serializers.ValidationError("Incorrect Credentials")
+class CourseSerializer(serializers.ModelSerializer):
+    professor = serializers.PrimaryKeyRelatedField(queryset=ProfessorProfile.objects.all())
+
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+class StudentProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StudentProfile
+        fields = ['user','stu_no','is_ta','phone_no']  # Adjust this to include only the fields you want to expose
+
+class ProfessorProfileSerializer(serializers.ModelSerializer):
+    students = StudentProfileSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ProfessorProfile
+        fields = ['user','national_no','students']  # Adjust this to include only the fields you want to expose
+
+
+class RequestsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model  = Requests
+        fields = '__all__'
+

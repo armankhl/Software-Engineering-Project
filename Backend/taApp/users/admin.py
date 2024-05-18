@@ -4,3 +4,4 @@ from . import models
 admin.site.register(models.Course)
 admin.site.register(models.StudentProfile)
 admin.site.register(models.ProfessorProfile)
+admin.site.register(models.Requests)
