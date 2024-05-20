@@ -11,16 +11,16 @@ const Footer = () => {
           سما - سامانه مدیریت استادیار
         </p>
         <div className={"flex flex-row justify-center items-center basis-6/12"}>
-          <a href={""} className={"text-white text-lg basis-1/4"}>
+          <a href={"/questions"} className={"text-white text-lg basis-1/4"}>
             سوالات متداول
           </a>
-          <a href={""} className={"text-white text-lg basis-1/4"}>
+          <a href={"/about"} className={"text-white text-lg basis-1/4"}>
             درباره ما
           </a>
-          <a href={""} className={"text-white text-lg basis-1/4"}>
+          <a href={"/rules"} className={"text-white text-lg basis-1/4"}>
             شرایط و قوانین
           </a>
-          <a href={""} className={"text-white text-lg basis-1/4"}>
+          <a href={"/contact"} className={"text-white text-lg basis-1/4"}>
             تماس با ما
           </a>
         </div>
