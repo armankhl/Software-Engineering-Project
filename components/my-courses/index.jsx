@@ -30,6 +30,7 @@ function MyCourses() {
               <span className='pl-3'>توضیحات:</span>
               <span></span>  {/* Replace with description */}
             </div>
+            
             </div>
             <div className='flex items-center justify-center w-1/4'>
             <button className=" py-2 px-4 bg-white text-black font-bold rounded-xl">
