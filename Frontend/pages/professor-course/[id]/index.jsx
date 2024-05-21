@@ -113,7 +113,9 @@ const CourseDetailsPage = () => {
                   color="info"
                   variant="contained"
                   onClick={() =>
-                    router.push(`/professor-select-student?courseID=${id}`)
+                    router.push(
+                      `/professor-select-student?courseID=${id}&courseName=${course?.name}`
+                    )
                   }
                 >
                   درخواست ها

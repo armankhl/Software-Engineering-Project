@@ -50,3 +50,19 @@ export const createCourseRequestAPI = async ({ professorId, ...data }) => {
 
   return response.data;
 };
+
+export const updateRequestStatus = async (data) => {
+  const user = getUser();
+  const response = await apiService.patch(
+    `/users/request/professor/${user.professorid}`,
+    data
+  );
+
+  return response.data;
+};
+
+export const getCourseRequestStudentAPI = async (id) => {
+  const response = await apiService.get(`/users/request/student/${id}`);
+
+  return response.data;
+};

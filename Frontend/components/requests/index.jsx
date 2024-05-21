@@ -1,63 +1,7 @@
-import { useState } from "react";
 import Request from "@/components/request";
+import { falsyString } from "@/utils/falsyString";
 
-const Requests = () => {
-  const [request, setRequest] = useState([
-    {
-      name: "محمد امین کیانی",
-      studentNum: "4003613052",
-      adjusted: "17",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1400",
-      rate: "3",
-      status: false,
-    },
-    {
-      name: "یزدان افرا",
-      studentNum: "4003613005",
-      adjusted: "19.93",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1400",
-      rate: "4.5",
-      status: false,
-    },
-    {
-      name: "آرمان خلیلی",
-      studentNum: "4003623016",
-      adjusted: "15.59",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1400",
-      rate: "2",
-      status: false,
-    },
-    {
-      name: "علی حسینی فرد",
-      studentNum: "4003623018",
-      adjusted: "16",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1400",
-      rate: "2",
-      status: false,
-    },
-    {
-      name: "رها اعتمادی",
-      studentNum: "4033613001",
-      adjusted: "12.02",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1403",
-      rate: "1",
-      status: false,
-    },
-    {
-      name: "طناز محمدی",
-      studentNum: "983613009",
-      adjusted: "20",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1398",
-      rate: "5",
-      status: false,
-    },
-  ]);
+const Requests = ({ requests }) => {
   return (
     <div className={"flex flex-col border border-black"}>
       <div className={"flex flex-row h-14 "}>
@@ -111,18 +55,21 @@ const Requests = () => {
           وضعیت درخواست
         </p>
       </div>
-      {request.map((k, index) => (
-        <Request
-          key={index}
-          name={k.name}
-          studentNum={k.studentNum}
-          adjusted={k.adjusted}
-          field={k.field}
-          enterYear={k.enterYear}
-          rate={k.rate}
-          status={k.status}
-        />
-      ))}
+      {requests &&
+        requests.map((k, index) => (
+          <Request
+            key={`uncertain-ta-${k.id}-${index}`}
+            id={k.id}
+            studentNum={falsyString(k.studentNo)}
+            name={`${falsyString(k.studentFirstName)} ${falsyString(
+              k.studentLastName
+            )}`}
+            adjusted={falsyString(k.gpa)}
+            field={falsyString(k.field_of_study)}
+            enterYear={falsyString(k.enter_year)}
+            rate={falsyString(k.point)}
+          />
+        ))}
     </div>
   );
 };

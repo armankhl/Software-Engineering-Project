@@ -9,7 +9,7 @@ import { getUser } from "@/utils/user";
 import { Button, Modal } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 const StuHome = () => {
@@ -34,6 +34,18 @@ const StuHome = () => {
       toast.error("مشکلی بوجود آمده است");
     },
   });
+
+  const [search, setSearch] = useState("");
+
+  const filteredCourses = useMemo(() => {
+    return (
+      data?.filter((course) => {
+        return (
+          course.name.includes(search) || course.professorName.includes(search)
+        );
+      }) ?? []
+    );
+  }, [data, search]);
 
   const [formValue, setFormValue] = useState({
     enter_year: "",
@@ -67,7 +79,18 @@ const StuHome = () => {
             {isLoading ? (
               "..."
             ) : (
-              <div className="flex justify-center items-center w-full">
+              <div className="flex flex-col justify-center items-center w-full gap-5">
+                <div id={"search"} className={"w-1/2"}>
+                  <input
+                    type="search"
+                    id="search-form"
+                    className={
+                      "w-full h-full text-black bg-gray-300 border-2 rounded-xl px-3 focus:outline-none focus:border-slate-400"
+                    }
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="جست و جو اسم درس و استاد"
+                  />
+                </div>
                 <div className="w-3/4 bg-white rounded-lg shadow-md p-8 overflow-y-auto">
                   <div className="flex flex-col justify-center items-start mb-4">
                     <h1 className="text-xl font-bold text-right justify-end text-black">
@@ -75,7 +98,7 @@ const StuHome = () => {
                     </h1>
                     <div className="w-full h-px bg-gray-400"></div>
                   </div>
-                  {data.map((course) => (
+                  {filteredCourses.map((course) => (
                     <div
                       key={`course-${course.id}`}
                       className="flex flex-row bg-gray-200 rounded-md p-4 mb-4 gap-8"

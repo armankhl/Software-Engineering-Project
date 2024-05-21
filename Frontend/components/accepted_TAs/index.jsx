@@ -1,25 +1,7 @@
-import { useState } from "react";
 import Accepted from "@/components/accepted";
+import { falsyString } from "@/utils/falsyString";
 
-const Accepted_TAs = () => {
-  const [accepted, setaccepted] = useState([
-    {
-      name: "محمد امین کیانی",
-      studentNum: "4003613052",
-      adjusted: "17",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1400",
-      rate: "3",
-    },
-    {
-      name: "طناز محمدی",
-      studentNum: "983613009",
-      adjusted: "20",
-      field: "مهندسی کامپیوتر",
-      enterYear: "1398",
-      rate: "5",
-    },
-  ]);
+const Accepted_TAs = ({ requests }) => {
   return (
     <div className={"flex flex-col border border-black"}>
       <div className={"flex flex-row h-14 "}>
@@ -66,17 +48,20 @@ const Accepted_TAs = () => {
           امتیاز
         </p>
       </div>
-      {accepted.map((k, index) => (
-        <Accepted
-          key={index}
-          name={k.name}
-          studentNum={k.studentNum}
-          adjusted={k.adjusted}
-          field={k.field}
-          enterYear={k.enterYear}
-          rate={k.rate}
-        />
-      ))}
+      {requests &&
+        requests.map((k, index) => (
+          <Accepted
+            key={`accepted-ta-${k.id}-${index}`}
+            studentNum={falsyString(k.studentNo)}
+            name={`${falsyString(k.studentFirstName)} ${falsyString(
+              k.studentLastName
+            )}`}
+            adjusted={falsyString(k.gpa)}
+            field={falsyString(k.field_of_study)}
+            enterYear={falsyString(k.enter_year)}
+            rate={falsyString(k.point)}
+          />
+        ))}
     </div>
   );
 };

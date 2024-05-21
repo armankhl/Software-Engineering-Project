@@ -1,4 +1,25 @@
+import { updateRequestStatus } from "@/utils/api/course";
+import { Button } from "@mui/material";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+
 const Request = (props) => {
+  const queryClient = useQueryClient();
+  const updateRequestMutation = useMutation({
+    mutationFn: updateRequestStatus,
+    onSuccess() {
+      queryClient.invalidateQueries(["course-request"]);
+      toast.success("وضعیت درخواست با موفقیت تغییر کرد");
+    },
+    onError() {
+      toast.error("مشکلی بوجود آمده است");
+    },
+  });
+
+  const handleActionsOnRequest = (status) => {
+    updateRequestMutation.mutate({ id: props.id, status });
+  };
+
   return (
     <div className={"flex flex-row"}>
       <p
@@ -48,20 +69,27 @@ const Request = (props) => {
           "flex flex-row justify-center gap-2 bg-white text-black text-lg text-center basis-3/12 border border-gray-500 p-2"
         }
       >
-        <button
-          className={
-            "border border-gray-500 bg-[#76ABAE] px-3 rounded-lg text-center"
-          }
+        <Button
+          color="success"
+          variant="contained"
+          onClick={() => handleActionsOnRequest("accept")}
+          disabled={updateRequestMutation.isPending}
         >
-          تایید
-        </button>
-        <button
-          className={
-            "border border-gray-500 bg-[#76ABAE] px-5 rounded-lg text-center"
-          }
+          {updateRequestMutation.isPending
+            ? "در حال تعیین وضعیت"
+            : "تایید درخواست"}
+        </Button>
+
+        <Button
+          color="error"
+          variant="contained"
+          onClick={() => handleActionsOnRequest("decline")}
+          disabled={updateRequestMutation.isPending}
         >
-          رد
-        </button>
+          {updateRequestMutation.isPending
+            ? "در حال تعیین وضعیت"
+            : "رد درخواست"}
+        </Button>
       </p>
     </div>
   );
