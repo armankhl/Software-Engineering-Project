@@ -148,4 +148,4 @@ class RequestsSerializer(serializers.ModelSerializer):
 
 class RateSerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    rate = serializers.IntegerField(min_value=0, max_value=5)  # Assuming ratings are between 1 and 5
+    rate = serializers.IntegerField(min_value=0, max_value=5) 

@@ -278,7 +278,7 @@ def student_profile_picture(request):
         try:
             profile = StudentProfile.objects.get(user=request.user)
             serializer = StudentProfileSerializer(profile)
-            return Response(serializer.data)
+            return Response(serializer.data['profile_picture'])
         except StudentProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -300,7 +300,7 @@ def professor_profile_picture(request):
         try:
             profile = ProfessorProfile.objects.get(user=request.user)
             serializer = ProfessorProfileSerializer(profile)
-            return Response(serializer.data)
+            return Response(serializer.data['profile_picture'])
         except ProfessorProfile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
