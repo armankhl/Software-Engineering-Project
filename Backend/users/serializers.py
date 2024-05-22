@@ -93,14 +93,14 @@ class CourseSerializer(serializers.ModelSerializer):
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProfile
-        fields = ['user','stu_no','is_ta','phone_no','profile_picture','average']  # Adjust this to include only the fields you want to expose
+        fields = ['user','stu_no','is_ta','phone_no','profile_picture','average','university','college','about_me','gpa','enter_year','major']  # Adjust this to include only the fields you want to expose
 
 class ProfessorProfileSerializer(serializers.ModelSerializer):
     students = StudentProfileSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProfessorProfile
-        fields = ['user','national_no','students','profile_picture']  # Adjust this to include only the fields you want to expose
+        fields = ['user','national_no','students','university','college','about_me','profile_picture']  # Adjust this to include only the fields you want to expose
 
 
 class RequestsSerializer(serializers.ModelSerializer):
@@ -113,10 +113,11 @@ class RequestsSerializer(serializers.ModelSerializer):
     courseTerm = serializers.SerializerMethodField()
     professorFirstName = serializers.SerializerMethodField()
     professorLastName = serializers.SerializerMethodField()
+    average = serializers.SerializerMethodField()
 
     class Meta:
         model  = Requests
-        fields = ['id','course', 'student', 'enter_year', 'field_of_study', 'point', 'gpa', 'status', 'studentFirstName', 'studentLastName', 'studentNo', 'courseName', 'courseDescription', 'courseMinpoint', 'courseTerm', 'professorFirstName', 'professorLastName']
+        fields = ['id','course', 'student', 'enter_year', 'field_of_study', 'point', 'gpa', 'status', 'studentFirstName', 'studentLastName', 'studentNo', 'courseName', 'courseDescription', 'courseMinpoint', 'courseTerm', 'professorFirstName', 'professorLastName','average']
 
 
     def get_studentFirstName(self, obj):
@@ -145,6 +146,9 @@ class RequestsSerializer(serializers.ModelSerializer):
 
     def get_professorLastName(self, obj):
         return obj.course.professor.user.last_name
+    
+    def get_average(self, obj):
+        return obj.student.average
 
 class RateSerializer(serializers.Serializer):
     id = serializers.IntegerField()

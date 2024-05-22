@@ -68,6 +68,7 @@ class LoginView(APIView):
                 user_data = {
                     'id': user.id,
                     'role': "student",
+                    'studentid': student.id,
                     'username': user.username,
                     'first_name': user.first_name,
                     "last_name": user.last_name,
@@ -76,6 +77,12 @@ class LoginView(APIView):
                     'is_ta': student.is_ta,
                     'email': user.email,
                     'profile_picture': profile_picture_url,
+                    'university': student.university,
+                    'college': student.college,
+                    'about_me': student.about_me,
+                    'gpa': student.gpa,
+                    'enter_year': student.enter_year,
+                    'major': student.major,
                     'average': student.average,
                 }
                 return Response({"token": token.key, "user_data": user_data}, status=status.HTTP_200_OK)
@@ -92,6 +99,9 @@ class LoginView(APIView):
                 "last_name": user.last_name,
                 'national_no': professor.national_no,
                 'email': user.email,
+                'university': professor.university,
+                'college': professor.college,
+                'about_me': professor.about_me,
                 'profile_picture': profile_picture_url,
                 }
                 return Response({"token": token.key, "user_data": user_data}, status=status.HTTP_200_OK)
@@ -248,7 +258,13 @@ class StudentProfilePartialUpdateView(generics.UpdateAPIView):
         instance = self.get_object()
         instance.phone_no = request.data.get('phone_no', instance.phone_no)
         instance.is_ta = request.data.get('is_ta', instance.is_ta)  
-        instance.save(update_fields=['phone_no', 'is_ta'])  
+        instance.university = request.data.get('university', instance.university)
+        instance.college = request.data.get('college', instance.college)
+        instance.about_me = request.data.get('about_me', instance.about_me)
+        instance.gpa = request.data.get('gpa', instance.gpa)
+        instance.enter_year = request.data.get('enter_year', instance.enter_year)
+        instance.major = request.data.get('major', instance.major)
+        instance.save(update_fields=['phone_no', 'is_ta','university','college','about_me','gpa','enter_year','major'])  
         return super().partial_update(request, *args, **kwargs)
 
 class ProfessorProfilePartialUpdateView(generics.UpdateAPIView):
@@ -260,7 +276,10 @@ class ProfessorProfilePartialUpdateView(generics.UpdateAPIView):
     def partial_update(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.national_no = request.data.get('national_no', instance.national_no)
-        instance.save(update_fields=['national_no'])
+        instance.university = request.data.get('university', instance.university)
+        instance.college = request.data.get('college', instance.college)
+        instance.about_me = request.data.get('about_me', instance.about_me)
+        instance.save(update_fields=['national_no','university','college','about_me'])
         return super().partial_update(request, *args, **kwargs)
 
 class CourseDeleteView(MultipleFieldLookupMixin, generics.DestroyAPIView):

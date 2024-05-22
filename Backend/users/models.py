@@ -10,12 +10,21 @@ class StudentProfile(models.Model):
     rate_sum = models.IntegerField(verbose_name="Rating Sum",default=0)
     rate_count = models.IntegerField(verbose_name="Rating Count",default=0)
     average = models.IntegerField(verbose_name="Rating Count",default=0)
+    university = models.CharField(verbose_name='University', max_length=20, default='')
+    college = models.CharField(verbose_name='College', max_length=20, default='')
+    about_me = models.TextField(verbose_name='About Me', default='')
+    gpa = models.FloatField(verbose_name='GPA', default=0)
+    enter_year = models.IntegerField(verbose_name="Enter Year",default=0)
+    major = models.CharField(verbose_name="Major",default='')
 
 class ProfessorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     national_no = models.CharField(verbose_name="National Number", max_length=10, unique=True, blank=False)
     students = models.ManyToManyField('StudentProfile', through='StudentProfessor', related_name='professors', default=None)
     profile_picture = models.ImageField(upload_to='profile_pictures/', verbose_name="Profile Picture", blank=True, null=True)
+    university = models.CharField(verbose_name='University', max_length=20, default='')
+    college = models.CharField(verbose_name='College', max_length=20, default='')
+    about_me = models.TextField(verbose_name='About Me', default='')
     def __str__(self):
         return f"{self.user} - {self.national_no}"
 #intermediary model for adding some elemnts like datetime for relations if necessary
