@@ -6,11 +6,16 @@ class StudentProfile(models.Model):
     stu_no = models.CharField(verbose_name="Student Number", max_length=10, blank=False, null=False)
     is_ta = models.BooleanField(default=False)
     phone_no = models.CharField(verbose_name="Phone Number", blank=False, null=False)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', verbose_name="Profile Picture", blank=True, null=True)
+    rate_sum = models.IntegerField(verbose_name="Rating Sum",default=0)
+    rate_count = models.IntegerField(verbose_name="Rating Count",default=0)
+    average = models.IntegerField(verbose_name="Rating Count",default=0)
 
 class ProfessorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     national_no = models.CharField(verbose_name="National Number", max_length=10, unique=True, blank=False)
     students = models.ManyToManyField('StudentProfile', through='StudentProfessor', related_name='professors', default=None)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', verbose_name="Profile Picture", blank=True, null=True)
     def __str__(self):
         return f"{self.user} - {self.national_no}"
 #intermediary model for adding some elemnts like datetime for relations if necessary

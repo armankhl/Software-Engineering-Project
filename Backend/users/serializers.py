@@ -93,14 +93,14 @@ class CourseSerializer(serializers.ModelSerializer):
 class StudentProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentProfile
-        fields = ['user','stu_no','is_ta','phone_no']  # Adjust this to include only the fields you want to expose
+        fields = ['user','stu_no','is_ta','phone_no','profile_picture','average']  # Adjust this to include only the fields you want to expose
 
 class ProfessorProfileSerializer(serializers.ModelSerializer):
     students = StudentProfileSerializer(many=True, read_only=True)
 
     class Meta:
         model = ProfessorProfile
-        fields = ['user','national_no','students']  # Adjust this to include only the fields you want to expose
+        fields = ['user','national_no','students','profile_picture']  # Adjust this to include only the fields you want to expose
 
 
 class RequestsSerializer(serializers.ModelSerializer):
@@ -146,3 +146,6 @@ class RequestsSerializer(serializers.ModelSerializer):
     def get_professorLastName(self, obj):
         return obj.course.professor.user.last_name
 
+class RateSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    rate = serializers.IntegerField(min_value=0, max_value=5)  # Assuming ratings are between 1 and 5
