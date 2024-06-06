@@ -21,5 +21,6 @@ urlpatterns = [
     path('student/profile-picture/', student_profile_picture, name='student_profile_picture'),
     path('professor/profile-picture/', professor_profile_picture, name='professor_profile_picture'),
     path('professor/update-rate/', update_student_rate, name='update_student_rate'),
+    path('student/upload-resume/<int:professor_id>/', FileUploadView.as_view(), name='file-upload'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

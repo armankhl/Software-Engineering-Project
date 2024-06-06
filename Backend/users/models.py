@@ -27,12 +27,21 @@ class ProfessorProfile(models.Model):
     about_me = models.TextField(verbose_name='About Me', default='')
     def __str__(self):
         return f"{self.user} - {self.national_no}"
+
 #intermediary model for adding some elemnts like datetime for relations if necessary
 class StudentProfessor(models.Model):
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, default=None)
     professor = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, default=None)
 
+class ProfessorFiles(models.Model):
+    professor_profile = models.ForeignKey(ProfessorProfile, on_delete=models.CASCADE, related_name='files')
+    uploaded_by_student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='professor_files/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('uploaded_by_student', 'professor_profile') 
+        
 #course model
 def validate_zero_or_one(value):
     if value not in (0, 1):

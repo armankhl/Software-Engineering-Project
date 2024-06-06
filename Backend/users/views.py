@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.views import APIView
+# from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView 
 from rest_framework.decorators import api_view,permission_classes,authentication_classes
 from .serializers import *
 from rest_framework.authtoken.models import Token
@@ -35,7 +36,8 @@ class MultipleFieldLookupMixin(object):
         return obj
 
 
-class ProfessorRegisterView(APIView):
+class ProfessorRegisterView(GenericAPIView):
+    serializer_class = ProfessorRegisterSerializer
     def post(self, request):
         serializer = ProfessorRegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -43,14 +45,15 @@ class ProfessorRegisterView(APIView):
             return Response("professor successfully registered!", status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class LogoutView(APIView):
+class LogoutView(GenericAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
 
-class LoginView(APIView):
+class LoginView(GenericAPIView):
+    serializer_class = LoginSerializer
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
@@ -108,7 +111,8 @@ class LoginView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class StudentRegisterView(APIView):
+class StudentRegisterView(GenericAPIView):
+    serializer_class = StudentRegisterSerializer
     def post(self, request):
         serializer = StudentRegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -117,10 +121,10 @@ class StudentRegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RequestView(APIView):
+class RequestView(GenericAPIView):
     authentication_classes = [TokenAuthentication]
     permissions_classes = [IsAuthenticated]
-
+    serializer_class = RequestsSerializer
     def get(self, request, role, id):
         if role == 'student':
             try:
@@ -154,9 +158,10 @@ class RequestView(APIView):
 
 
 
-class ProfessorCourseAPIView(APIView):
+class ProfessorCourseAPIView(GenericAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    serializer_class = CourseSerializer
     def get(self, request, name):
 
         try:
@@ -198,7 +203,8 @@ def allCourseInStudent(request):
 
 
 
-class CourseRegisterView(APIView):
+class CourseRegisterView(GenericAPIView):
+    serializer_class = CourseSerializer
     def post(self, request):
         name = request.data.get('name')
         serializer = CourseSerializer(data=request.data)
@@ -209,7 +215,7 @@ class CourseRegisterView(APIView):
 
 
 
-class ProfessorDetailsView(UserPassesTestMixin, APIView):
+class ProfessorDetailsView(UserPassesTestMixin, GenericAPIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -359,3 +365,28 @@ def update_student_rate(request):
             return Response({"error": "Student not found."}, status=status.HTTP_404_NOT_FOUND)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class FileUploadView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = FileUploadSerializer
+    def post(self, request, professor_id, *args, **kwargs):
+        try:
+            student_profile = StudentProfile.objects.get(user=request.user)
+            professor_profile = ProfessorProfile.objects.get(id=professor_id)
+        except (StudentProfile.DoesNotExist, ProfessorProfile.DoesNotExist):
+            return Response({"error": "Invalid user or professor ID."}, status=status.HTTP_400_BAD_REQUEST)
+
+        existing_file = ProfessorFiles.objects.filter(uploaded_by_student=student_profile, professor_profile=professor_profile).first()
+        
+        serializer = FileUploadSerializer(data=request.data, partial=True)  # Allow partial updates
+        if serializer.is_valid():
+            if existing_file:
+                # Update the existing instance
+                serializer.update(existing_file, serializer.validated_data)
+            else:
+                # Create a new instance
+                serializer.save(uploaded_by_student=student_profile, professor_profile=professor_profile)
+            
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

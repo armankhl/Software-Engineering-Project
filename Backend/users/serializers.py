@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from users.models import ProfessorProfile, StudentProfile, Course, Requests
+from users.models import ProfessorProfile, StudentProfile, Course, Requests, ProfessorFiles
 from django.contrib.auth import authenticate
 from rest_framework import generics
 
@@ -114,11 +114,13 @@ class RequestsSerializer(serializers.ModelSerializer):
     professorFirstName = serializers.SerializerMethodField()
     professorLastName = serializers.SerializerMethodField()
     average = serializers.SerializerMethodField()
-
+    student_user_id = serializers.SerializerMethodField()
     class Meta:
         model  = Requests
-        fields = ['id','course', 'student', 'enter_year', 'field_of_study', 'point', 'gpa', 'status', 'studentFirstName', 'studentLastName', 'studentNo', 'courseName', 'courseDescription', 'courseMinpoint', 'courseTerm', 'professorFirstName', 'professorLastName','average']
+        fields = ['id','student_user_id','course', 'student', 'enter_year', 'field_of_study', 'point', 'gpa', 'status', 'studentFirstName', 'studentLastName', 'studentNo', 'courseName', 'courseDescription', 'courseMinpoint', 'courseTerm', 'professorFirstName', 'professorLastName','average']
 
+    def get_student_user_id(self, obj):
+        return obj.student.user.id
 
     def get_studentFirstName(self, obj):
         return obj.student.user.first_name
@@ -153,3 +155,18 @@ class RequestsSerializer(serializers.ModelSerializer):
 class RateSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     rate = serializers.IntegerField(min_value=0, max_value=5) 
+
+class FileUploadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfessorFiles
+        fields = ['id', 'uploaded_by_student', 'file']
+
+    def create(self, validated_data):
+        # Create a new instance
+        return ProfessorFiles.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        # Update the existing instance
+        instance.file = validated_data.get('file', instance.file)
+        instance.save()
+        return instance
