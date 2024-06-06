@@ -62,11 +62,11 @@ function Certificate({
           <span className="text-[#31363F] font-medium">{semester}</span>  به
           عنوان استادیار  درس با تعهد و تلاش مستمر، نقش مؤثری در پیشبرد اهداف
           آموزشی دوره داشته است و  خدمات آموزشی و پژوهشی ارزشمندی را در این
-          راستا ارائه داده است
+          راستا ارائه داده است.
         </p>
         <div className="flex flex-row-reverse mt-2">
           <img
-            src="/Uni-Logo.png"
+            src="/Uni-Logo-removebg-preview.png"
             alt="Image 1"
             style={{ width: "5rem", height: "5rem" }}
             className="w-32 h-32 mr-4"
@@ -78,7 +78,7 @@ function Certificate({
               style={{ width: "5rem", height: "5rem" }}
               className="w-32 h-32"
             />
-            <p className="text-center text-black text-sm">معاونت آموزشی</p>
+            <p className="text-center text-gray-500 text-sm">معاونت آموزشی</p>
           </div>
         </div>
       </div>
