@@ -1,7 +1,10 @@
-import { DRF_TOKEN_KEY, USER_KEY } from "@/utils/api/axios";
+import { baseUrl, DRF_TOKEN_KEY, USER_KEY } from "@/utils/api/axios";
+import { getProfessorProfile } from "@/utils/api/user";
 import { falsyString } from "@/utils/falsyString";
 import { getUser } from "@/utils/user";
 import { Menu, MenuItem } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -23,6 +26,15 @@ const Header = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const { data, isLoading } = useQuery({
+    queryFn: getProfessorProfile,
+    queryKey: ["professor-prof"],
+  });
+
+  const profileUrl = data?.data
+    ? baseUrl + "/users" + data.data
+    : "/user-profile.svg";
 
   return (
     <div
@@ -55,9 +67,12 @@ const Header = () => {
           {isMounted &&
             `${falsyString(user?.first_name)} ${falsyString(user?.last_name)}`}
         </div>
-        <img
-          src={"/icons8-administrator-male-26.png"}
-          className={"h-12 w-12 border border-white rounded-full"}
+        <Image
+          src={profileUrl}
+          alt="profile"
+          width={150}
+          height={150}
+          className="rounded-full border w-14 h-14 object-cover"
         />
       </div>
 

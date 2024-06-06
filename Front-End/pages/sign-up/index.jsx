@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import { studentsignupAPI } from "@/utils/api/signup";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";

@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-html-link-for-pages */
 import { DRF_TOKEN_KEY, USER_KEY } from "@/utils/api/axios";
 import { loginAPI } from "@/utils/api/login";
 import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";

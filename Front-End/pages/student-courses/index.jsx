@@ -4,6 +4,7 @@ import { getCourseRequestStudentAPI } from "@/utils/api/course";
 import { falsyString } from "@/utils/falsyString";
 import getStatusName from "@/utils/status";
 import { getUser } from "@/utils/user";
+import { Button } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
@@ -41,6 +42,12 @@ const StuHome = () => {
   const statusColors = {
     accept: "green",
     decline: "red",
+  };
+
+  const handleUserCertificateClick = (course) => {
+    router.push(
+      `/student-certificate?profName=${course.professorFirstName}&profLastname=${course.professorLastName}&term=${course.courseTerm}&course=${course.courseName}`
+    );
   };
 
   return (
@@ -107,16 +114,24 @@ const StuHome = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center justify-center w-1/4 text-black gap-2">
-                        <p>وضعیت درخواست:</p>
+                      <div className="flex items-center w-2/5 text-black justify-between">
                         <p
                           className={"mx-2 "}
                           style={{
                             color: statusColors[course.status] ?? "orange",
                           }}
                         >
+                          <span className="text-black">وضعیت درخواست:</span>{" "}
                           {getStatusName(course.status)}
                         </p>
+                        <div>
+                          <Button
+                            variant="contained"
+                            onClick={() => handleUserCertificateClick(course)}
+                          >
+                            مشاهده گواهی
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}

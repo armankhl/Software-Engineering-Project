@@ -1,8 +1,11 @@
 import StudentGuard from "@/components/guards/studentGuard";
 import Layout from "@/components/layout_TAs";
+import { baseUrl } from "@/utils/api/axios";
+import { getStudentProfile } from "@/utils/api/user";
 import { falsyString } from "@/utils/falsyString";
 import { getUser } from "@/utils/user";
 import { Button } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,7 +20,14 @@ const StudentProfile = () => {
     setIsMounted(true);
   }, []);
 
-  const profileUrl = "/user-profile.svg";
+  const { data } = useQuery({
+    queryFn: getStudentProfile,
+    queryKey: ["student-prof"],
+  });
+
+  const profileUrl = data?.data
+    ? baseUrl + "/users" + data.data
+    : "/user-profile.svg";
 
   return (
     <StudentGuard>
@@ -33,13 +43,13 @@ const StudentProfile = () => {
             {isMounted && (
               <div className="profile-info flex flex-col p-10 w-2/3 h-96 gap-10 bg-white shadow-md rounded-lg mt-4 max-auto">
                 <div className="profile-details flex flex-row items-center justify-center w-full space-x-6 lg-x-12 gap-36">
-                  <div className="profile-picture-container w-1/6 flex items-start justify-start ml-4">
+                  <div className="profile-picture-container w-3/6 flex items-start justify-start ml-4">
                     <Image
                       src={profileUrl}
-                      alt="profile picture"
-                      width={24}
-                      height={24}
-                      className="profile-picture rounded-full mr-4 w-24 h-24 object-cover"
+                      alt="profile"
+                      width={150}
+                      height={150}
+                      className="rounded-full border p-1 w-32 h-32 object-contain"
                     />
                   </div>
                   <div className="profile-details-group-1 w-full flex flex-col gap-4">

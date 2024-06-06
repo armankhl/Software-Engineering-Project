@@ -1,17 +1,26 @@
 import ProfessorGuard from "@/components/guards/professorGuard";
 import Layout from "@/components/layout";
-import { USER_KEY } from "@/utils/api/axios";
-import { updateProfessorProfile } from "@/utils/api/user";
+import { baseUrl, USER_KEY } from "@/utils/api/axios";
+import {
+  getProfessorProfile,
+  updateProfessorProfile,
+  uploadProfessorFile,
+} from "@/utils/api/user";
 import { getUser } from "@/utils/user";
 import { Button } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 
 const ProfessorProfileEdit = () => {
   const router = useRouter();
   const user = getUser();
+
+  const inputRef = useRef(null);
+
+  const queryClient = useQueryClient();
 
   const [profile, setProfile] = useState({
     first_name: "",
@@ -52,12 +61,45 @@ const ProfessorProfileEdit = () => {
     updateProfileMutation.mutate(profile);
   };
 
+  const { data, isLoading } = useQuery({
+    queryFn: getProfessorProfile,
+    queryKey: ["professor-prof"],
+  });
+
+  const profileUrl = data?.data
+    ? baseUrl + "/users" + data.data
+    : "/user-profile.svg";
+
+  const uploadProfileMutation = useMutation({
+    mutationFn: uploadProfessorFile,
+    onSuccess() {
+      queryClient.invalidateQueries(["professor-prof"]);
+      toast.success("عملیات با موفقیت انجام شد");
+    },
+    onError() {
+      toast.error("مشکلی بوجود آمده است");
+    },
+  });
+
+  const uploadFile = () => {
+    inputRef.current.click();
+  };
+
+  const handleUploadFileChange = (e) => {
+    const file = e.target.files[0];
+
+    const formData = new FormData();
+    formData.append("profile_picture", file);
+
+    uploadProfileMutation.mutate(formData);
+  };
+
   return (
     <ProfessorGuard>
       <Layout>
         <div
           className={
-            " w-screen h-screen bg-white overflow-x-hidden flex flex-row justify-center"
+            " w-screen h-screen bg-white flex flex-row justify-center py-40"
           }
           dir={"rtl"}
         >
@@ -68,6 +110,29 @@ const ProfessorProfileEdit = () => {
             }
           >
             <div className={"text-[#222831] w-full grid grid-cols-2 gap-4"}>
+              <div className="col-span-2 flex items-center gap-5">
+                <Image
+                  src={profileUrl}
+                  alt="profile"
+                  width={150}
+                  height={150}
+                  className="rounded-full border w-40 h-40 object-contain"
+                />
+
+                <div>
+                  <Button onClick={uploadFile} variant="contained" color="info">
+                    اپلود عکس
+                  </Button>
+                </div>
+
+                <input
+                  ref={inputRef}
+                  type="file"
+                  placeholder="تغییر پروفایل"
+                  className="hidden"
+                  onChange={handleUploadFileChange}
+                />
+              </div>
               <div className={"flex flex-col"}>
                 <label className={"pr-3 pb-2"}>نام</label>
                 <input
@@ -125,7 +190,7 @@ const ProfessorProfileEdit = () => {
                                 bg-[#EEEEEE] text-lg placeholder:text-[#8B8C8D] focus:outline-none focus:ring-0 shadow-inner"
                 />
               </div>
-              <div className={"flex flex-col w-full"}>
+              <div className={"flex flex-col w-full col-span-2"}>
                 <label className={"pr-3 pb-2"}>دانشکده</label>
                 <input
                   type="text "
