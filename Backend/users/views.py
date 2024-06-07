@@ -19,6 +19,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 import os
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.files.storage import default_storage
 
 class MultipleFieldLookupMixin(object):
     def get_object(self):
@@ -65,9 +66,6 @@ class LoginView(GenericAPIView):
                 student = None
                 professor = ProfessorProfile.objects.get(user=user)
             if student != None:
-                profile_picture_url = None
-                if student.profile_picture:
-                    profile_picture_url = student.profile_picture.url
                 user_data = {
                     'id': user.id,
                     'role': "student",
@@ -79,7 +77,6 @@ class LoginView(GenericAPIView):
                     'stu_no': student.stu_no,
                     'is_ta': student.is_ta,
                     'email': user.email,
-                    'profile_picture': profile_picture_url,
                     'university': student.university,
                     'college': student.college,
                     'about_me': student.about_me,
@@ -90,9 +87,6 @@ class LoginView(GenericAPIView):
                 }
                 return Response({"token": token.key, "user_data": user_data}, status=status.HTTP_200_OK)
             else:
-                profile_picture_url = None
-                if professor.profile_picture:
-                    profile_picture_url = professor.profile_picture
                 user_data = {
                 'professorid':professor.id,
                 'id': user.id,
@@ -105,7 +99,6 @@ class LoginView(GenericAPIView):
                 'university': professor.university,
                 'college': professor.college,
                 'about_me': professor.about_me,
-                'profile_picture': profile_picture_url,
                 }
                 return Response({"token": token.key, "user_data": user_data}, status=status.HTTP_200_OK)
 
@@ -382,11 +375,51 @@ class FileUploadView(GenericAPIView):
         if serializer.is_valid():
             if existing_file:
                 # Update the existing instance
-                serializer.update(existing_file, serializer.validated_data)
+                instance = serializer.update(existing_file, serializer.validated_data)
+                file_url = default_storage.url(instance.file.name)
+                
+                # Prepare the response data
+                response_data = {
+                    'file_url': file_url
+                }
+                return Response(response_data, status=status.HTTP_200_OK)
             else:
                 # Create a new instance
-                serializer.save(uploaded_by_student=student_profile, professor_profile=professor_profile)
+                instance = serializer.save(professor_id=professor_id)
             
-            return Response(serializer.data, status=status.HTTP_200_OK)
+                # Calculate the URL of the uploaded file
+                file_url = default_storage.url(instance.file.name)
+                
+                # Prepare the response data
+                response_data = {
+                    'file_url': file_url
+                }
+                return Response(response_data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetFileURLView(generics.GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)  # Ensure the user is authenticated
+
+    def get(self, request, student_id, *args, **kwargs):
+        # Retrieve the current user's professor profile
+        try:
+            professor_profile = ProfessorProfile.objects.get(user=request.user)
+        except ProfessorProfile.DoesNotExist:
+            return Response({"error": "The current user is not a professor."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the student profile based on the provided student_id
+        try:
+            student_profile = StudentProfile.objects.get(id=student_id)
+        except StudentProfile.DoesNotExist:
+            return Response({"error": "Invalid student ID."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the file uploaded by the student for this professor
+        file = ProfessorFiles.objects.filter(uploaded_by_student=student_profile, professor_profile=professor_profile).first()
+        if not file:
+            return Response({"error": "No file found for this professor and student combination."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Return the URL of the file
+        file_url = file.file.url
+        return Response({"file_url": file_url}, status=status.HTTP_200_OK)

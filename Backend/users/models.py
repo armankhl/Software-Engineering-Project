@@ -41,7 +41,7 @@ class ProfessorFiles(models.Model):
 
     class Meta:
         unique_together = ('uploaded_by_student', 'professor_profile') 
-        
+
 #course model
 def validate_zero_or_one(value):
     if value not in (0, 1):
