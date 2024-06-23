@@ -10,6 +10,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password']
     
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        # Remove the password field from the serialized output
+        del rep['password']
+        return rep
+    
 
 class ProfessorRegisterSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -163,7 +169,7 @@ class FileUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProfessorFiles
-        fields = ['id', 'file']
+        fields = ['id', 'professor_profile', 'uploaded_by_student','file']
 
     def create(self, validated_data):
         return ProfessorFiles.objects.create(**validated_data)

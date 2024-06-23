@@ -39,8 +39,8 @@ class ProfessorFiles(models.Model):
     file = models.FileField(upload_to='professor_files/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('uploaded_by_student', 'professor_profile') 
+    # class Meta:
+    #     unique_together = ('uploaded_by_student', 'professor_profile') 
 
 #course model
 def validate_zero_or_one(value):

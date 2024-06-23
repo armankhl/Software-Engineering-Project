@@ -362,6 +362,7 @@ def update_student_rate(request):
 class FileUploadView(GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = FileUploadSerializer
+
     def post(self, request, professor_id, *args, **kwargs):
         try:
             student_profile = StudentProfile.objects.get(user=request.user)
@@ -370,8 +371,12 @@ class FileUploadView(GenericAPIView):
             return Response({"error": "Invalid user or professor ID."}, status=status.HTTP_400_BAD_REQUEST)
 
         existing_file = ProfessorFiles.objects.filter(uploaded_by_student=student_profile, professor_profile=professor_profile).first()
-        
-        serializer = FileUploadSerializer(data=request.data, partial=True)  # Allow partial updates
+
+        # Include professor_profile in the data for creating a new instance
+        data = request.data.copy()
+        data['professor_profile'] = professor_profile.id
+        data['uploaded_by_student'] = student_profile.id
+        serializer = FileUploadSerializer(data=data, partial=True)  # Allow partial updates
         if serializer.is_valid():
             if existing_file:
                 # Update the existing instance
@@ -385,7 +390,7 @@ class FileUploadView(GenericAPIView):
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
                 # Create a new instance
-                instance = serializer.save(professor_id=professor_id)
+                instance = serializer.save()
             
                 # Calculate the URL of the uploaded file
                 file_url = default_storage.url(instance.file.name)
@@ -399,7 +404,8 @@ class FileUploadView(GenericAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GetFileURLView(generics.GenericAPIView):
+
+class GetFileURLForProfessorView(generics.GenericAPIView):
     permission_classes = (permissions.IsAuthenticated,)  # Ensure the user is authenticated
 
     def get(self, request, student_id, *args, **kwargs):
@@ -407,6 +413,7 @@ class GetFileURLView(generics.GenericAPIView):
         try:
             professor_profile = ProfessorProfile.objects.get(user=request.user)
         except ProfessorProfile.DoesNotExist:
+            
             return Response({"error": "The current user is not a professor."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Retrieve the student profile based on the provided student_id
@@ -417,6 +424,31 @@ class GetFileURLView(generics.GenericAPIView):
 
         # Retrieve the file uploaded by the student for this professor
         file = ProfessorFiles.objects.filter(uploaded_by_student=student_profile, professor_profile=professor_profile).first()
+        if not file:
+            return Response({"error": "No file found for this professor and student combination."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Return the URL of the file
+        file_url = file.file.url
+        return Response({"file_url": file_url}, status=status.HTTP_200_OK)
+
+class GetFileURLForStudentView(GenericAPIView):
+    permission_classes = (permissions.IsAuthenticated,)  # Ensure the user is authenticated
+
+    def get(self, request, professor_id, *args, **kwargs):
+        # Retrieve the current user's profile
+        try:
+            user_profile = StudentProfile.objects.get(user=request.user)
+        except StudentProfile.DoesNotExist:
+            return Response({"error": "The current user is not a student."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the professor profile using the provided professor_id
+        try:
+            professor_profile = ProfessorProfile.objects.get(pk=professor_id)
+        except ProfessorProfile.DoesNotExist:
+            return Response({"error": "Invalid professor ID."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the file uploaded by the student for this professor
+        file = ProfessorFiles.objects.filter(uploaded_by_student=user_profile, professor_profile=professor_profile).first()
         if not file:
             return Response({"error": "No file found for this professor and student combination."}, status=status.HTTP_404_NOT_FOUND)
 
