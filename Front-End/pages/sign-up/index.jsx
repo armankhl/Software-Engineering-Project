@@ -214,8 +214,12 @@ const SignUp = () => {
         </form>
 
         <div className={"flex flex-row gap-28 text-white text-lg mt-5"}>
-          <button>ارتباط با پشتیبانی</button>
-          <button>شرایط و قوانین</button>
+          <a href="/about/contact">
+            <button>ارتباط با پشتیبانی</button>
+          </a>
+          <a href="/about/rules">
+            <button>شرایط و قوانین</button>
+          </a>
         </div>
       </div>
     </div>

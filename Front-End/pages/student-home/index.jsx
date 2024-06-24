@@ -1,12 +1,13 @@
 import StudentGuard from "@/components/guards/studentGuard";
 import Layout from "@/components/layout_TAs";
+import UploadResume from "@/components/uploadResume/uploadResume";
 import {
   createCourseRequestAPI,
   getStudentCourseAPI,
 } from "@/utils/api/course";
 import { falsyString } from "@/utils/falsyString";
 import { getUser } from "@/utils/user";
-import { Button } from "@mui/material";
+import { Button, Modal } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
@@ -53,16 +54,9 @@ const StuHome = () => {
       toast.error("برای ثبت درخواست باید پروفایل خود را تکمیل کنید");
       return;
     }
-    createRequestMutation.mutate({
-      professorId: professorId,
-      enter_year: user.enter_year,
-      field_of_study: user.major,
-      point: user.average,
-      gpa: user.gpa,
-      status: "uncertain",
-      course: courseId,
-      student: user.studentid,
-    });
+
+    setIsModalOpen(true);
+    setSelectedCourse({ courseId, professorId });
   };
 
   return (
@@ -138,9 +132,7 @@ const StuHome = () => {
                             createRequest(course.professor, course.id);
                           }}
                         >
-                          {createRequestMutation.isPending
-                            ? "درحال ثبت..."
-                            : "ارسال درخواست"}
+                          ارسال درخواست
                         </Button>
                       </div>
                     </div>
@@ -149,6 +141,17 @@ const StuHome = () => {
               </div>
             )}
           </div>
+
+          <Modal
+            open={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            className="flex items-center justify-center"
+          >
+            <UploadResume
+              course={selectedCourse}
+              onClose={() => setIsModalOpen(false)}
+            />
+          </Modal>
         </div>
       </Layout>
     </StudentGuard>

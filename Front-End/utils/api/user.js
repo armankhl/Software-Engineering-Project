@@ -53,3 +53,13 @@ export const uploadStudentFile = async (data) => {
   const res = apiService.patch(`/users/student/profile-picture/`, data);
   return res;
 };
+
+export const UploadStudentResume = async ({ id, file }) => {
+  const res = apiService.post(`/users/student/upload-resume/${id}/`, file);
+  return res;
+};
+
+export const getStudentResume = async (id) => {
+  const res = apiService.get(`/users/professor/get-resume/${id}/`);
+  return res;
+};

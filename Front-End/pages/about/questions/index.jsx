@@ -5,7 +5,7 @@ const FAQs = () => {
   return (
     <div
       dir="rtl"
-      className="bg-[#EEEEEE] text-gray-800 h-screen w-screen px-10 pt-10"
+      className="bg-[#EEEEEE] text-gray-800 h-screen w-screen px-10 pt-10 overflow-x-hidden"
     >
       <h1 className="text-3xl font-bold text-center text-gray-800">
         سوالات متداول

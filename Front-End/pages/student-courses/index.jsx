@@ -90,7 +90,7 @@ const StuHome = () => {
                         <h3 className="text-lg font-bold text-right text-black">
                           نام درس:{falsyString(course.courseName)}
                         </h3>
-                        <div className="flex flex-row gap-32 mt-2">
+                        <div className="flex flex-row gap-10 xl:gap-24 mt-2">
                           <div className="flex justify-between text-black">
                             <span className="pl-3">استاد:</span>
                             <span>

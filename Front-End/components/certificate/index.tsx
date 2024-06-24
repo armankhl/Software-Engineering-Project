@@ -21,8 +21,8 @@ function Certificate({
   const router = useRouter();
 
   return (
-    <div className="bg-[#EEEEEE] h-screen font-sans flex flex-col justify-center items-center">
-      <div className="bg-[#EEEEEE] rounded-md shadow-xl px-8 py-12 w-1/2 p-0">
+    <div className="bg-[#EEEEEE] h-screen font-sans flex flex-col justify-center items-center overflow-x-hidden mb-2">
+      <div className="bg-[#EEEEEE] rounded-md shadow-xl px-8 py-12 w-1/2 p-0 mt-16">
         <p className=" text-center mb-2 mt-0 text-[#02595E]">
           Verified Certification of Completion
         </p>
@@ -42,26 +42,28 @@ function Certificate({
           {courseName}
         </p>
         <p className="text-[#02595E] text-center">
-          Instructed by{" "}
-          <span className="text-[#31363F] font-medium">{instructorName}</span>{" "}
-          the University of Isfahan on the{" "}
+          .at the University of Isfahan on the{" "}
           <span className="text-[#31363F] font-medium">{semester}</span>{" "}
           semester
+          <span className="text-[#31363F] font-medium">
+            {instructorName}
+          </span>{" "}
+          Instructed by{" "}
         </p>
         <hr className="border border-[#707070] w-80% mx-auto mt-4" />
         <p className="text-black text-center mt-4">
-          بدین وسیله گواهی میشود دانشجوی گرامی 
-          <span className="text-[#31363F] font-medium">{studentName}</span>  با
-          شماره دانشجویی  
-          <span className="text-[#31363F] font-medium">{studentNumber}</span>
-            در دوره آموزش  
-          <span className="text-[#31363F] font-medium">{courseName}</span>  با
-          تدریس دکتر 
-          <span className="text-[#31363F] font-medium">{instructorName}</span>
-            در ترم تحصیلی  
-          <span className="text-[#31363F] font-medium">{semester}</span>  به
-          عنوان استادیار  درس با تعهد و تلاش مستمر، نقش مؤثری در پیشبرد اهداف
-          آموزشی دوره داشته است و  خدمات آموزشی و پژوهشی ارزشمندی را در این
+          بدین وسیله گواهی می شود دانشجوی گرام 
+          <span className="text-[#31363F] font-medium">{"ی "+studentName}</span>  با
+          شماره دانشجویی  
+          <span className="text-[#31363F] font-medium">{" "+studentNumber}</span>
+            در دوره آموزش  
+          <span className="text-[#31363F] font-medium">{"ی "+courseName}</span>  با
+          تدریس دکتر 
+          <span className="text-[#31363F] font-medium">{" "+instructorName + " "}</span>
+          در ترم تحصیلی   
+          <span className="text-[#31363F] font-medium">{" " + semester}</span>  به
+          عنوان استادیار  درس با تعهد و تلاش مستمر، نقش مؤثری در پیشبرد اهداف
+          آموزشی دوره داشته است و  خدمات آموزشی و پژوهشی ارزشمندی را در این
           راستا ارائه داده است.
         </p>
         <div className="flex flex-row-reverse mt-2">
@@ -75,10 +77,10 @@ function Certificate({
             <img
               src="/Signature.png "
               alt="Image 2"
-              style={{ width: "5rem", height: "5rem" }}
+              style={{ width: "5rem", height: "4rem" }}
               className="w-32 h-32"
             />
-            <p className="text-center text-gray-500 text-sm">معاونت آموزشی</p>
+            <p className="text-center text-blue-950 text-sm">معاونت آموزشی</p>
           </div>
         </div>
       </div>

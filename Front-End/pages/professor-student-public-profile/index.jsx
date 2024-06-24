@@ -1,5 +1,5 @@
 import ProfessorGuard from "@/components/guards/professorGuard";
-import Layout from "@/components/layout_TAs";
+import Layout from "@/components/layout";
 import ProfilePage from "@/components/StudentDetails";
 
 const StudentProfile = () => {

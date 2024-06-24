@@ -47,7 +47,7 @@ const ContactUs = () => {
             </a>
           </p>
           <p className="text-base font-medium">اینستاگرام : samaostadyar@</p>
-          <p className="text-base font-medium">لینکدبن : linkedin.com</p>
+          <p className="text-base font-medium">لینکدین : UniSama@</p>
           <hr className="w-full border-gray-400 my-4" />
 
           <li className="font-bold">تلفن</li>

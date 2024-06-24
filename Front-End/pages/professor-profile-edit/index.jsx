@@ -99,7 +99,7 @@ const ProfessorProfileEdit = () => {
       <Layout>
         <div
           className={
-            " w-screen h-screen bg-white flex flex-row justify-center py-40"
+            " w-screen h-screen bg-white flex flex-row justify-center py-40 overflow-x-hidden mb-5"
           }
           dir={"rtl"}
         >
@@ -109,7 +109,7 @@ const ProfessorProfileEdit = () => {
               "flex flex-col w-4/6 h-full items-center justify-center px-20"
             }
           >
-            <div className={"text-[#222831] w-full grid grid-cols-2 gap-4"}>
+            <div className={"text-[#222831] w-full grid grid-cols-2 gap-4 mt-80"}>
               <div className="col-span-2 flex items-center gap-5">
                 <Image
                   src={profileUrl}

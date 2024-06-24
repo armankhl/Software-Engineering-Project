@@ -54,7 +54,9 @@ const Header = () => {
       <div
         className={"text-white basis-8/12 flex flex-row gap-16 items-center"}
       >
-        <Link href="/professor-home">خانه</Link>
+        <Link className="mr-6" href="/professor-home">
+          خانه
+        </Link>
         <Link href="/professor-new-request">تعریف درس جدید</Link>
       </div>
 

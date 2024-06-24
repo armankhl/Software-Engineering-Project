@@ -54,7 +54,7 @@ const SignUp = () => {
   return (
     <div
       className={
-        "items-center justify-center h-screen w-screen flex flex-row bg-[#31363f] bg-gradient-to-r from-[#222831] to-gray-700"
+        "items-center justify-center py-10 min-h-screen max-w-screen w-full flex flex-row bg-[#31363f] bg-gradient-to-r from-[#222831] to-gray-700"
       }
       dir={"rtl"}
     >
@@ -198,8 +198,12 @@ const SignUp = () => {
         </form>
 
         <div className={"flex flex-row gap-28 text-white text-lg mt-5"}>
-          <button>ارتباط با پشتیبانی</button>
-          <button>شرایط و قوانین</button>
+          <a href="/about/contact">
+            <button>ارتباط با پشتیبانی</button>
+          </a>
+          <a href="/about/rules">
+            <button>شرایط و قوانین</button>
+          </a>
         </div>
       </div>
     </div>

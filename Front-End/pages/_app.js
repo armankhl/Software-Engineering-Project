@@ -1,9 +1,9 @@
-import "@/styles/globals.css";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../styles/globals.css";
 
 export const theme = createTheme({
   typography: {

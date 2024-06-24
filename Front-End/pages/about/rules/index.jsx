@@ -5,7 +5,7 @@ const TermsAndConditions = () => {
   return (
     <div
       dir="rtl"
-      className="bg-[#EEEEEE] text-gray-800 w-screen h-screen px-10 pt-10 overflow-hidden"
+      className="bg-[#EEEEEE] text-gray-800 w-screen h-screen px-10 pt-10 overflow-x-hidden"
     >
       <h1 className="text-3xl font-bold text-center text-gray-800">
         شرایط و قوانین سایت

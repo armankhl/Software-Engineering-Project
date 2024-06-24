@@ -1,6 +1,8 @@
+import { baseUrl } from "@/utils/api/axios";
 import {
   getStudentFullProfile,
   getStudentOjb,
+  getStudentResume,
   pointUserAPI,
 } from "@/utils/api/user";
 import { falsyString } from "@/utils/falsyString";
@@ -20,7 +22,6 @@ const ProfilePage = () => {
   const [point, setPoint] = useState(0);
 
   const studentID = router.query.userId;
-
   const studentProfileId = router.query.profileId;
 
   const { data: profile, isLoading } = useQuery({
@@ -33,6 +34,12 @@ const ProfilePage = () => {
     queryFn: async () => getStudentOjb(studentID),
     queryKey: ["student-full-prof-ojb", studentID],
     enabled: !!studentID,
+  });
+
+  const { data: resume } = useQuery({
+    queryFn: async () => getStudentResume(studentProfileId),
+    queryKey: ["student-resume", studentProfileId],
+    enabled: !!studentProfileId,
   });
 
   const pointMutation = useMutation({
@@ -48,13 +55,15 @@ const ProfilePage = () => {
 
   const isListLoading = !router.isReady && isLoading && isUserLoading;
 
-  const profileUrl = "/user-profile.svg";
+  const profileUrl = profile?.data?.profile_picture
+    ? baseUrl + "/users/media" + profile.data.profile_picture.split("/media")[1]
+    : "/user-profile.svg";
 
   return (
     <>
       <div
         dir="rtl"
-        className="profile-page flex flex-col items-center justify-center min-h-screen bg-gray-200"
+        className="profile-page flex flex-col items-center justify-center h-screen bg-gray-200 overflow-x-hidden"
       >
         <div className="profile-info-title w-2/3 h-1/12 text-gray-700 text-3xl font-bold mb-4 mr-4 flex-row items-center justify-end mt-4 ">
           پروفایل دانشجو
@@ -63,14 +72,14 @@ const ProfilePage = () => {
           "..."
         ) : (
           <div className="profile-info flex flex-col p-10 w-2/3 h-96 gap-10 bg-white shadow-md rounded-lg mt-4 max-auto">
-            <div className="profile-details flex flex-row items-center justify-center w-full space-x-6 lg-x-12 gap-36">
-              <div className="profile-picture-container w-1/6 flex items-start justify-start ml-4">
+            <div className="profile-details flex flex-row items-center justify-center w-full space-x-6 lg-x-12 2xl:gap-36">
+              <div className="profile-picture-container flex items-start justify-start ml-4">
                 <Image
                   src={profileUrl}
-                  alt="profile picture"
-                  width={24}
-                  height={24}
-                  className="profile-picture rounded-full mr-4 w-24 h-24 object-cover"
+                  alt="profile"
+                  width={150}
+                  height={150}
+                  className="rounded-full border p-1 min-w-32 h-32 object-contain"
                 />
               </div>
               <div className="profile-details-group-1 w-full flex flex-col gap-4">
@@ -177,7 +186,7 @@ const ProfilePage = () => {
           ‌
           <Button
             variant="contained"
-            color="info"
+            color="error"
             onClick={() => router.back()}
           >
             بازگشت
@@ -192,6 +201,18 @@ const ProfilePage = () => {
           >
             امتیاز دهی
           </Button>
+          {resume?.data?.file_url && (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={baseUrl + "/users" + resume.data.file_url}
+              download
+            >
+              <Button variant="contained" color="info">
+                دانلود رزومه
+              </Button>
+            </a>
+          )}
         </div>
       </div>
 
